@@ -89,19 +89,22 @@ class robot_kinetics:
 		self.calibrateFinished = False
 
 		self.pub = rospy.Publisher('response', String, queue_size=1)
+		#self.pub.publish("alive")
 
 	
 	def calibrate(self):
 		if not self.calibrateStarted:
+			self.pub.publish("Switch of the ESC and press the button again")
 			#pi.set_servo_pulsewidth(ESC, 0)
 			print("switch of the ESC and press the button again")
-			#self.pub.publish("switch of the ESC and press the button again")
+			
 			time.sleep(5)
 		elif self.calibrateStarted and not self.calibrateContinued:
+			self.pub.publish("Connect the battery now... Wait for the ESC to beep then press the button again")
 			#pi.set_servo_pulsewidth(ESC, max_value)
 			print("connect the battery now... w8 4 the ESC to beep then press the button again")
-			#self.pub.publish("connect the battery now... w8 4 the ESC to beep then press the button again")
-		else:
+		else:	
+			self.pub.publish("Please wait for a few seconds...")
 			
 			time.sleep(5)
 			#pi.set_servo_pulsewidth(ESC, min_value)
@@ -166,7 +169,6 @@ if __name__ == '__main__':
 		ROBOT.engine_thread.terminate()
 		ROBOT.steerng_thread.terminate()
 		pass
-
 
 
 
