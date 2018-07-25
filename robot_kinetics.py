@@ -39,15 +39,16 @@ class engine_listener(threading.Thread):
         threading.Thread.__init__(self)
         self.sub = sub
         self.speed = 1500
+        pi.set_servo_pulsewidth(ESC, self.speed)
 
     def sent_command(self, data):
         self.drive(data.data)
 
     def drive(self, data):
         print(self.speed)
-        if data == 'forward' and self.speed != 1588:
+        if data == 'forward' and self.speed != 1600:
             self.speed += 1
-        elif data == 'reverse' and self.speed != 1417:
+        elif data == 'reverse' and self.speed != 1400:
             self.speed -= 1
         else:
             pass
@@ -77,7 +78,6 @@ class steering_listener(threading.Thread):
             self.turn -= 5
         else:
             pass
-
         pwm.set_pwm(0,0,self.turn)
 
     def run(self):
@@ -118,10 +118,23 @@ class robot_kinetics:
             pi.set_servo_pulsewidth(ESC, 0)
 
             time.sleep(5)
-            pi.set_servo_pulsewidth(ESC, 0)
+            pi.set_servo_pulsewidth(ESC, min_value)
 
             time.sleep(1)
             print("done calibrating..")
+
+    # Put the arm-function after the calibration seems unnessecary. But so does calibrating every time...
+    def arm(self):
+        pi.set_servo_pulsewidth(ESC, 1500)
+        print("Connect the battery and press Enter")
+        inp =input()
+        if inp == '':
+            pi.set_servo_pulsewidth(ESC, 0)
+            time.sleep(1)
+            pi.set_servo_pulsewidth(ESC, max_value)
+            time.sleep(1)
+            pi.set_servo_pulsewidth(ESC, min_value)
+            time.sleep(1)
 
     def callback(self, data):
         rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
