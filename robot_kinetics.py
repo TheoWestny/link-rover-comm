@@ -47,9 +47,9 @@ class engine_listener(threading.Thread):
     def drive(self, data):
         print(self.speed)
         if data == 'forward' and self.speed != 1600:
-            self.speed += 1
+            self.speed += 5
         elif data == 'reverse' and self.speed != 1400:
-            self.speed -= 1
+            self.speed -= 5
         else:
             pass
         pi.set_servo_pulsewidth(ESC, self.speed)
@@ -65,6 +65,7 @@ class steering_listener(threading.Thread):
     def __init__(self, sub):
         threading.Thread.__init__(self)
         self.sub = sub
+        self.channel = 1
         self.turn = 425
 
     def sent_command(self, data):
@@ -78,7 +79,7 @@ class steering_listener(threading.Thread):
             self.turn -= 5
         else:
             pass
-        pwm.set_pwm(0,0,self.turn)
+        pwm.set_pwm(self.channel,0,self.turn)
 
     def run(self):
         rospy.Subscriber(self.sub, String, self.sent_command)
@@ -122,6 +123,7 @@ class robot_kinetics:
 
             time.sleep(1)
             print("done calibrating..")
+            pi.set_servo_pulsewidth(ESC, 1500)
 
     # Put the arm-function after the calibration seems unnessecary. But so does calibrating every time...
     def arm(self):
