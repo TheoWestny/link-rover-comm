@@ -66,16 +66,16 @@ class steering_listener(threading.Thread):
         threading.Thread.__init__(self)
         self.sub = sub
         self.channel = 1
-        self.turn = 430
+        self.turn = 500
 
     def sent_command(self, data):
         self.drive(data.data)
 
     def drive(self, data):
         print(self.turn)
-        if data == 'left' and self.turn != 510:
+        if data == 'left' and self.turn != 600:
             self.turn += 10
-        elif data == 'right' and self.turn != 330:
+        elif data == 'right' and self.turn != 400:
             self.turn -= 10
         else:
             pass
