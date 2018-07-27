@@ -66,7 +66,7 @@ class steering_listener(threading.Thread):
         threading.Thread.__init__(self)
         self.sub = sub
         self.channel = 1
-        self.turn = 425
+        self.turn = 430
 
     def sent_command(self, data):
         self.drive(data.data)
