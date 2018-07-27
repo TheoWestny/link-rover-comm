@@ -39,7 +39,7 @@ class engine_listener(threading.Thread):
         threading.Thread.__init__(self)
         self.sub = sub
         self.oldcommand = None
-        self.startspeed_forward = 1570
+        self.startspeed_forward = 1560
         self.startspeed_backward = 1470
         self.speed = 1500
         pi.set_servo_pulsewidth(ESC, self.speed)
