@@ -73,9 +73,9 @@ class steering_listener(threading.Thread):
 
     def drive(self, data):
         print(self.turn)
-        if data == 'left' and self.turn != 600:
+        if data == 'right' and self.turn != 660:
             self.turn += 10
-        elif data == 'right' and self.turn != 400:
+        elif data == 'left' and self.turn != 390:
             self.turn -= 10
         else:
             pass
