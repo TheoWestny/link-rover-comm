@@ -38,6 +38,9 @@ class engine_listener(threading.Thread):
     def __init__(self, sub):
         threading.Thread.__init__(self)
         self.sub = sub
+        self.oldcommand = None
+        self.startspeed_forward = 1570
+        self.startspeed_backward = 1420
         self.speed = 1500
         pi.set_servo_pulsewidth(ESC, self.speed)
 
@@ -46,10 +49,18 @@ class engine_listener(threading.Thread):
 
     def drive(self, data):
         print(self.speed)
-        if data == 'forward' and self.speed != 1600:
-            self.speed += 5
-        elif data == 'reverse' and self.speed != 1400:
-            self.speed -= 5
+        if data == 'forward': 
+            if self.oldcommand == "backward":
+                self.speed = self.startspeed_forward
+                self.oldcommand = "forward" 
+            if self.speed != 1600:
+                self.speed += 5
+        elif data == 'reverse':
+            if self.oldcommand == "forward":
+                self.speed = self.startspeed_backward
+                self.olcommand = "backward"
+            if self.speed != 1400:
+                self.speed -= 5
         else:
             pass
         pi.set_servo_pulsewidth(ESC, self.speed)
@@ -66,7 +77,7 @@ class steering_listener(threading.Thread):
         threading.Thread.__init__(self)
         self.sub = sub
         self.channel = 1
-        self.turn = 600
+        self.turn = 620
 
     def sent_command(self, data):
         self.drive(data.data)
@@ -74,9 +85,9 @@ class steering_listener(threading.Thread):
     def drive(self, data):
         print(self.turn)
         if data == 'right' and self.turn != 840:
-            self.turn += 10
-        elif data == 'left' and self.turn != 390:
-            self.turn -= 10
+            self.turn += 20
+        elif data == 'left' and self.turn != 400:
+            self.turn -= 20
         else:
             pass
         pwm.set_pwm(self.channel,0,self.turn)
