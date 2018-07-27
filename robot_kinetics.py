@@ -74,9 +74,9 @@ class steering_listener(threading.Thread):
     def drive(self, data):
         print(self.turn)
         if data == 'left' and self.turn != 510:
-            self.turn += 5
-        elif data == 'right' and self.turn != 335:
-            self.turn -= 5
+            self.turn += 10
+        elif data == 'right' and self.turn != 330:
+            self.turn -= 10
         else:
             pass
         pwm.set_pwm(self.channel,0,self.turn)
