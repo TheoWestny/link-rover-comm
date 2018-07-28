@@ -79,37 +79,56 @@ class steering_listener(threading.Thread):
         threading.Thread.__init__(self)
         self.sub = sub
         self.pwm_channel = 1
+        self.last_command = None
         self.command_limit = None
         self.turn = 400
+        self.speed = self.turn - 390
+        self.turn_times = 0
 
     def sent_command(self, data):
         self.drive(data.data)
 
     def drive(self, data):
         print(self.turn)
-        if data == 'right': 
-            if self.command_limit == "right":
+        if data == 'right':
+            if self.last_command != "right":
+                self.last_command = "right"
+                self.turn_times = 0
+            elif self.last_command == "right":
+                self.turn_times += 1
+            if self.turn_times == 3:
                 pass
-            elif self.command_limit == "left":
-                self.command_limit = None
-            elif self.turn == 415:
-                self.turn = 400
-                self.command_limit = "right"
+            #if self.command_limit == "right":
+            #    pass
+            #elif self.command_limit == "left":
+            #    self.command_limit = None
+            #elif self.turn == 415:
+            #    self.turn = 400
+                #self.command_limit = "right"
             else:
-                self.turn += 5
+                #self.turn += 5
+                self.turn = 410
         elif data == 'left':
-            if self.command_limit == "left":
+            if self.last_command != "left":
+                self.last_command = "left":
+                self.turn_times = 0
+            elif self.last_command == "left":
+                self.turn_times += 1
+            if self.turn_times == 3:
                 pass
-            elif self.command_limit == "right":
-                self.command_limit = None
-            elif self.turn == 365:
-                self.turn = 400
-                self.command_limit = "left"
+            #elif self.command_limit == "right":
+            #    self.command_limit = None
+            #elif self.turn == 365:
+            #    self.turn = 400
+            #    self.command_limit = "left"
             else:
-                self.turn -= 5
+                #self.turn -= 5
+                self.turn = 370
         else:
             pass
         pwm.set_pwm(self.pwm_channel,0,self.turn)
+        time.sleep(0.1)
+        pwm.set_pwm(self.pwm_channel,0,400)
 
     def run(self):
         rospy.Subscriber(self.sub, String, self.sent_command)
