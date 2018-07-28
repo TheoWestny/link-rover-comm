@@ -92,7 +92,7 @@ class steering_listener(threading.Thread):
                 pass
             elif self.command_limit == "left":
                 self.command_limit = None
-            elif self.turn == 500:
+            elif self.turn == 1000:
                 self.turn = 280
                 self.command_limit = "right"
             else:
@@ -102,7 +102,7 @@ class steering_listener(threading.Thread):
                 pass
             elif self.command_limit == "right":
                 self.command_limit = None
-            elif self.turn == 50:
+            elif self.turn == 0:
                 self.turn = 280
                 self.command_limit = "left"
             else:
