@@ -96,8 +96,9 @@ class steering_listener(threading.Thread):
                 self.turn_times = 0
             elif self.last_command == "right":
                 self.turn_times += 1
-            if self.turn_times == 3:
-                pass
+                self.turn = 410
+            #if self.turn_times == 3:
+            #    pass
             #if self.command_limit == "right":
             #    pass
             #elif self.command_limit == "left":
@@ -105,30 +106,32 @@ class steering_listener(threading.Thread):
             #elif self.turn == 415:
             #    self.turn = 400
                 #self.command_limit = "right"
-            else:
+            #else:
                 #self.turn += 5
-                self.turn = 410
+            #    self.turn = 410
         elif data == 'left':
             if self.last_command != "left":
                 self.last_command = "left":
                 self.turn_times = 0
             elif self.last_command == "left":
                 self.turn_times += 1
-            if self.turn_times == 3:
-                pass
+                self.turn = 370
+            #if self.turn_times == 3:
+            #    pass
             #elif self.command_limit == "right":
             #    self.command_limit = None
             #elif self.turn == 365:
             #    self.turn = 400
             #    self.command_limit = "left"
-            else:
+            #else:
                 #self.turn -= 5
-                self.turn = 370
+            #    self.turn = 370
         else:
             pass
-        pwm.set_pwm(self.pwm_channel,0,self.turn)
-        time.sleep(0.1)
-        pwm.set_pwm(self.pwm_channel,0,400)
+        if self.turn_times < 4:
+            pwm.set_pwm(self.pwm_channel,0,self.turn)
+            time.sleep(0.1)
+            pwm.set_pwm(self.pwm_channel,0,400)
 
     def run(self):
         rospy.Subscriber(self.sub, String, self.sent_command)
