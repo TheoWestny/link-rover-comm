@@ -92,21 +92,21 @@ class steering_listener(threading.Thread):
                 pass
             elif self.command_limit == "left":
                 self.command_limit = None
-            elif self.turn == 1000:
+            elif self.turn == 415:
                 self.turn = 400
                 self.command_limit = "right"
             else:
-                self.turn += 1
+                self.turn += 5
         elif data == 'left':
             if self.command_limit == "left":
                 pass
             elif self.command_limit == "right":
                 self.command_limit = None
-            elif self.turn == 0:
+            elif self.turn == 365:
                 self.turn = 400
                 self.command_limit = "left"
             else:
-                self.turn -= 1
+                self.turn -= 5
         else:
             pass
         pwm.set_pwm(self.pwm_channel,0,self.turn)
