@@ -80,7 +80,7 @@ class steering_listener(threading.Thread):
         self.sub = sub
         self.pwm_channel = 1
         self.command_limit = None
-        self.turn = 280
+        self.turn = 400
 
     def sent_command(self, data):
         self.drive(data.data)
@@ -93,20 +93,20 @@ class steering_listener(threading.Thread):
             elif self.command_limit == "left":
                 self.command_limit = None
             elif self.turn == 1000:
-                self.turn = 280
+                self.turn = 400
                 self.command_limit = "right"
             else:
-                self.turn += 5
+                self.turn += 1
         elif data == 'left':
             if self.command_limit == "left":
                 pass
             elif self.command_limit == "right":
                 self.command_limit = None
             elif self.turn == 0:
-                self.turn = 280
+                self.turn = 400
                 self.command_limit = "left"
             else:
-                self.turn -= 5
+                self.turn -= 1
         else:
             pass
         pwm.set_pwm(self.pwm_channel,0,self.turn)
