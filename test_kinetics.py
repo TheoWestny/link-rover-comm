@@ -40,7 +40,7 @@ class engine_listener(threading.Thread):
         self.sub = sub
         self.oldcommand = None
         self.startspeed_forward = 1560
-        self.startspeed_backward = 1470
+        self.startspeed_reverse = 1470
         self.speed = 1500
         pi.set_servo_pulsewidth(ESC, self.speed)
 
@@ -50,17 +50,19 @@ class engine_listener(threading.Thread):
     def drive(self, data):
         print(self.speed)
         if data == 'forward': 
-            if self.oldcommand == "backward":
+            if self.oldcommand == "reverse":
                 self.speed = self.startspeed_forward
             if self.speed != 1600:
                 self.speed += 5
-            self.oldcommand = "forward" 
+            if self.oldcommand != "forward":
+                self.oldcommand = "forward" 
         elif data == 'reverse':
             if self.oldcommand == "forward":
-                self.speed = self.startspeed_backward
+                self.speed = self.startspeed_reverse
             if self.speed != 1400:
                 self.speed -= 5
-            self.oldcommand = "backward"
+            if self.oldcommand != "reverse":
+                self.oldcommand = "reverse"
         else:
             pass
         pi.set_servo_pulsewidth(ESC, self.speed)
@@ -76,21 +78,38 @@ class steering_listener(threading.Thread):
     def __init__(self, sub):
         threading.Thread.__init__(self)
         self.sub = sub
-        self.channel = 1
-        self.turn = 620
+        self.pwm_channel = 1
+        self.command_limit = None
+        self.turn = 400
 
     def sent_command(self, data):
         self.drive(data.data)
 
     def drive(self, data):
         print(self.turn)
-        if data == 'right' and self.turn != 840:
-            self.turn += 20
-        elif data == 'left' and self.turn != 400:
-            self.turn -= 20
+        if data == 'right': 
+            if self.command_limit == "right":
+                pass
+            elif self.command_limit == "left":
+                self.command_limit = None
+            elif self.turn == 500:
+                self.turn = 400
+                self.command_limit = "right"
+            else:
+                self.turn += 5
+        elif data == 'left':
+            if self.command_limit == "left":
+                pass
+            elif self.command_limit == "right":
+                self.command_limit = None
+            elif self.turn == 300:
+                self.turn = 400
+                self.command_limit = "left"
+            else:
+                self.turn -= 5
         else:
             pass
-        pwm.set_pwm(self.channel,0,self.turn)
+        pwm.set_pwm(self.pwm_channel,0,self.turn)
 
     def run(self):
         rospy.Subscriber(self.sub, String, self.sent_command)
