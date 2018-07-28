@@ -115,7 +115,7 @@ class steering_listener(threading.Thread):
                 self.turn_times = 0
             elif self.last_command == "left":
                 self.turn_times += 1
-                self.turn = 370
+                self.turn = 365
             #if self.turn_times == 3:
             #    pass
             #elif self.command_limit == "right":
