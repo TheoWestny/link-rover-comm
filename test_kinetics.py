@@ -81,7 +81,7 @@ class steering_listener(threading.Thread):
         self.pwm_channel = 1
         self.last_command = None
         self.command_limit = None
-        self.turn = 400
+        self.turn = 390
         self.speed = self.turn - 390
         self.turn_times = 0
 
@@ -128,10 +128,10 @@ class steering_listener(threading.Thread):
             #    self.turn = 370
         else:
             pass
-        if self.turn_times < 4:
+        if self.turn_times < 5:
             pwm.set_pwm(self.pwm_channel,0,self.turn)
             time.sleep(0.1)
-            pwm.set_pwm(self.pwm_channel,0,400)
+            pwm.set_pwm(self.pwm_channel,0,390)
 
     def run(self):
         rospy.Subscriber(self.sub, String, self.sent_command)
